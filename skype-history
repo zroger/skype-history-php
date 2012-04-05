@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+
+$baseDir = dirname(__FILE__);
+if (strpos('@php_bin@', '@php_bin') !== 0) {
+  // a pear install
+  $baseDir = 'SkypeHistory';
+}
+
+require_once 'Console/Table.php';
+require_once 'Console/CommandLine.php';
+require_once "{$baseDir}/lib/SkypeHistory/Call.php";
+require_once "{$baseDir}/lib/SkypeHistory/Main.php";
+
+date_default_timezone_set('America/New_York');
+
+$parser = new Console_CommandLine();
+$parser->description = 'Skype History - A more useful skype call history.';
+$parser->version = '0.0.1';
+$parser->addOption('threshold', array(
+    'short_name'  => '-t',
+    'long_name'   => '--threshold',
+    'description' => 'Calls less than this amount of time (in seconds) will not be reported.',
+    'help_name'   => '60',
+    'action'      => 'StoreInt',
+    'default'     => 60,
+));
+$parser->addOption('since', array(
+    'short_name'  => '-s',
+    'long_name'   => '--since',
+    'description' => 'Only report calls that occurred after this time.  Can be almost any parseable date string.',
+    'help_name'   => '"Last Monday"',
+    'action'      => 'StoreString',
+    'default'     => 'Last Monday',
+));
+
+try {
+    $app = $parser->parse();
+    skype_history($app->options['threshold'], $app->options['since']);
+}
+catch (Exception $e) {
+    $parser->displayError($e->getMessage());
+    exit(1);
+}
