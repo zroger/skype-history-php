@@ -9,10 +9,9 @@ so this will only run on OS/X.
 
 ## Installation
 
-    pear install console_commandline
-    pear install console_table
-    chmod +x skype-history.php
-
+    pear channel-discover zroger.github.com/pear
+    pear install zroger/SkypeHistory
+    
 ## Usage
 
     skype-history [options]
